@@ -163,12 +163,7 @@ onMounted(() => {
                 :size="size"
                 @click="openDialog(row)"
               >
-                回看视频(
-                <span v-if="row.reviewerState === 101" class="text-red-500"
-                  >未审核</span
-                >
-                <span v-else class="text-green-500">已审核</span>
-                )
+                回看视频
               </el-button>
             </template>
           </pure-table>

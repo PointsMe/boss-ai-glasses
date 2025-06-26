@@ -80,7 +80,7 @@ export function useRole(treeRef: Ref) {
       }
     },
     {
-      label: "状态",
+      label: "督导审核状态",
       prop: "supervisorState",
       cellRenderer: ({ row, props }) => (
         <el-tag
@@ -89,13 +89,32 @@ export function useRole(treeRef: Ref) {
           ]}
           size={props.size}
         >
-          {row.supervisorState === 101
-            ? "督导未审核"
-            : row.supervisorState === 103
-              ? "督导审核不通过"
-              : row.supervisorState === 104
-                ? "督导审核通过"
-                : "督导审核中"}
+          {[
+            { 101: "督导未审核", 103: "督导审核不通过", 104: "督导审核通过" }[
+              row.supervisorState
+            ]
+          ]}
+        </el-tag>
+      )
+    },
+    {
+      label: "审核状态",
+      prop: "reviewerState",
+      cellRenderer: ({ row, props }) => (
+        <el-tag
+          type={[
+            { 101: "info", 103: "danger", 104: "success" }[row.reviewerState]
+          ]}
+          size={props.size}
+        >
+          {[
+            {
+              101: "未审核",
+              103: "审核不通过",
+              104: "审核通过",
+              105: "审核中"
+            }[row.reviewerState]
+          ]}
         </el-tag>
       )
     },
@@ -176,6 +195,7 @@ export function useRole(treeRef: Ref) {
                 if (res.code === 20000) {
                   ElMessage.success("审核不通过");
                   closeDialog(options, index);
+                  onSearch();
                 }
               });
             }
@@ -193,6 +213,7 @@ export function useRole(treeRef: Ref) {
                 if (res.code === 20000) {
                   ElMessage.success("审核通过");
                   closeDialog(options, index);
+                  onSearch();
                 }
               });
             }

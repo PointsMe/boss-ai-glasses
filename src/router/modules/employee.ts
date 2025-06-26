@@ -8,7 +8,8 @@ export default {
   meta: {
     icon: "ep/user-filled",
     title: "员工",
-    rank: 8
+    rank: 8,
+    showLink: false
   },
   children: [
     {
