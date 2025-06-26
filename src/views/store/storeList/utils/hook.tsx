@@ -5,16 +5,21 @@ import { transformI18n } from "@/plugins/i18n";
 import { addDialog } from "@/components/ReDialog";
 // import type { FormItemProps } from "../utils/types";
 import type { PaginationProps } from "@pureadmin/table";
+import { usePublicHooks } from "../../hooks";
 import { deviceDetection } from "@pureadmin/utils";
 import {
   getShopList,
   addShop,
   getShopDetailApi,
   getMerchantDetail,
-  updateShop
+  updateShop,
+  enableShopStatus,
+  disableShopStatus,
+  updateShopRenewalApi
 } from "@/api/user";
 import { type Ref, reactive, ref, onMounted, h, toRaw } from "vue";
-import { type } from "os";
+import { ElMessageBox } from "element-plus";
+import renewalDialog from "../renewalDialog.vue";
 
 export function useRole(treeRef: Ref) {
   const form = reactive({
@@ -24,6 +29,8 @@ export function useRole(treeRef: Ref) {
   const currentPage = ref(1);
   const currentSize = ref(10);
   const curRow = ref();
+  const switchLoadMap = ref({});
+  const { switchStyle } = usePublicHooks();
   const formRef = ref();
   const dataList = ref([]);
   const loading = ref(true);
@@ -37,6 +44,64 @@ export function useRole(treeRef: Ref) {
     currentPage: 1,
     background: true
   });
+  function onChange({ row }) {
+    ElMessageBox.confirm(
+      `确认要<strong>${
+        !row.enabled ? "停用" : "启用"
+      }</strong><strong style='color:var(--el-color-primary)'>${
+        row.name
+      }</strong>门店吗?`,
+      "系统提示",
+      {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        dangerouslyUseHTMLString: true,
+        draggable: true
+      }
+    )
+      .then(() => {
+        const params = new FormData();
+        params.append("id", row.id);
+        if (row.enabled) {
+          enableShopStatus(params).then(() => {
+            onSearch();
+            message("已成功启用门店", {
+              type: "success"
+            });
+          });
+        } else {
+          disableShopStatus(params).then(() => {
+            onSearch();
+            message("已成功禁用门店", {
+              type: "success"
+            });
+          });
+        }
+        // switchLoadMap.value[index] = Object.assign(
+        //   {},
+        //   switchLoadMap.value[index],
+        //   {
+        //     loading: true
+        //   }
+        // );
+        // setTimeout(() => {
+        //   switchLoadMap.value[index] = Object.assign(
+        //     {},
+        //     switchLoadMap.value[index],
+        //     {
+        //       loading: false
+        //     }
+        //   );
+        //   message("已成功修改用户状态", {
+        //     type: "success"
+        //   });
+        // }, 300);
+      })
+      .catch(() => {
+        row.enabled = !row.enabled;
+      });
+  }
   const columns: TableColumnList = [
     {
       label: "商家名称",
@@ -85,6 +150,25 @@ export function useRole(treeRef: Ref) {
         dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
     },
     {
+      label: "状态",
+      prop: "enabled",
+      minWidth: 90,
+      cellRenderer: scope => (
+        <el-switch
+          size={scope.props.size === "small" ? "small" : "default"}
+          loading={switchLoadMap.value[scope.index]?.loading}
+          v-model={scope.row.enabled}
+          active-value={true}
+          inactive-value={false}
+          active-text="已启用"
+          inactive-text="已停用"
+          inline-prompt
+          style={switchStyle.value}
+          onChange={() => onChange(scope as any)}
+        />
+      )
+    },
+    {
       label: "操作",
       fixed: "right",
       width: 210,
@@ -129,6 +213,54 @@ export function useRole(treeRef: Ref) {
     formEl.resetFields();
     onSearch();
   };
+  async function openDialogOne(row?: any) {
+    console.log("row", row);
+    addDialog({
+      title: `续费门店`,
+      props: {
+        formInline: {
+          shopId: row?.id ?? "",
+          type: row?.type ?? "",
+          endDate: row?.endDate ?? "",
+          amount: row?.amount ?? "",
+          remark: row?.remark ?? ""
+        }
+      },
+      width: "40%",
+      draggable: true,
+      fullscreen: deviceDetection(),
+      fullscreenIcon: true,
+      closeOnClickModal: false,
+      contentRenderer: () =>
+        h(renewalDialog, { ref: formRef, formInline: null }),
+      beforeSure: (done, { options }) => {
+        console.log("options", options);
+        const FormRef = formRef.value.getRef();
+        const curData = options.props.formInline;
+        FormRef.validate(valid => {
+          if (valid) {
+            console.log("curData", FormRef, curData);
+            updateShopRenewalApi({
+              shopId: row?.id ?? "",
+              type: curData.type,
+              endDate: curData.endDate,
+              amount: curData.amount,
+              remark: curData.remark
+            }).then(() => {
+              message("新增续费成功", {
+                type: "success"
+              });
+              done();
+            });
+          } else {
+            message("请填写完整信息", {
+              type: "error"
+            });
+          }
+        });
+      }
+    });
+  }
   async function openDialog(title = "新增", row?: any) {
     let res = null;
     let data = null;
@@ -154,7 +286,8 @@ export function useRole(treeRef: Ref) {
           contactName: data?.address?.contactName ?? "",
           contactPhone: data?.address?.contactPhone ?? "",
           zipcode: data?.address?.zipcode ?? "",
-          description: data?.description ?? ""
+          description: data?.description ?? "",
+          logoUrl: data?.logoUrl ?? ""
         }
       },
       width: "40%",
@@ -175,7 +308,7 @@ export function useRole(treeRef: Ref) {
         }
         FormRef.validate(valid => {
           if (valid) {
-            console.log("curData", curData);
+            console.log("curData", FormRef, curData);
             getMerchantDetail({ id: curData.merchantId }).then(result => {
               console.log("res", result);
               // 表单规则校验通过
@@ -186,6 +319,7 @@ export function useRole(treeRef: Ref) {
                   merchantId: curData.merchantId,
                   enabled: true,
                   type: 101,
+                  logoUrl: curData.logoUrl,
                   company: {
                     ...result.data?.company,
                     countryId: result.data?.company?.country?.id,
@@ -206,6 +340,7 @@ export function useRole(treeRef: Ref) {
                   merchantId: curData.merchantId,
                   enabled: true,
                   type: 101,
+                  logoUrl: curData.logoUrl,
                   company: {
                     ...data?.company,
                     countryId: data?.company?.country?.id,
@@ -282,6 +417,7 @@ export function useRole(treeRef: Ref) {
     // handleDatabase,
     handleSizeChange,
     handleCurrentChange,
-    handleSelectionChange
+    handleSelectionChange,
+    openDialogOne
   };
 }

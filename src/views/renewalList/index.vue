@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
 import { useRole } from "./utils/hook";
 import { ref, computed, nextTick, onMounted } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { getShopList } from "@/api/user"; // 门店列表
 import {
   delay,
   subBefore,
@@ -18,8 +18,7 @@ import Menu from "~icons/ep/menu";
 import AddFill from "~icons/ri/add-circle-line";
 import Close from "~icons/ep/close";
 import Check from "~icons/ep/check";
-import { getMerchantListApi } from "@/api/user";
-const router = useRouter();
+
 defineOptions({
   name: "Store"
 });
@@ -62,22 +61,28 @@ const {
   // buttonClass,
   onSearch,
   resetForm,
-  openDialog,
-  openDialogOne,
-  handleSave,
   filterMethod,
   transformI18n,
   onQueryChanged,
   // handleDatabase,
   handleSizeChange,
   handleCurrentChange,
-  handleSelectionChange
+  handleSelectionChange,
+  typeList,
+  stateList,
+  cancelRenewal,
+  renewApprove,
+  renewDisapprove
 } = useRole(treeRef);
-// const toPageCustemer = (row) => {
-//   router.push("/employee/index");
-//  }
-
+const shopList = ref([]);
+const getShopListFn = async () => {
+  const res = await getShopList({ page: 1, size: 1000 });
+  if (res && res.code === 20000) {
+    shopList.value = res.data.list;
+  }
+};
 onMounted(() => {
+  getShopListFn();
   useResizeObserver(contentRef, async () => {
     await nextTick();
     delay(60).then(() => {
@@ -86,13 +91,6 @@ onMounted(() => {
       );
     });
   });
-});
-
-const merchantList = ref([]);
-
-onMounted(async () => {
-  const { data } = await getMerchantListApi({ page: 1, size: 1000 });
-  merchantList.value = data.list;
 });
 </script>
 
@@ -104,29 +102,50 @@ onMounted(async () => {
       :model="form"
       class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
     >
-      <el-form-item label="商家名称" prop="name">
+      <el-form-item label="门店" prop="shopId">
         <el-select
-          v-model="form.merchantId"
-          class="w-[180px]!"
-          placeholder="请选择商家"
-          filterable
+          v-model="form.shopId"
+          class="w-[380px]!"
+          placeholder="请选择门店"
           clearable
         >
           <el-option
-            v-for="item in merchantList"
+            v-for="item in shopList"
             :key="item.id"
             :label="item.name"
             :value="item.id"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="门店名称：" prop="name">
-        <el-input
-          v-model="form.name"
-          placeholder="请输入门店名称"
+      <el-form-item label="续费类型" prop="type">
+        <el-select
+          v-model="form.type"
+          class="w-[380px]!"
+          placeholder="请选择续费类型"
           clearable
-          class="w-[180px]!"
-        />
+        >
+          <el-option
+            v-for="item in typeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="状态" prop="state">
+        <el-select
+          v-model="form.state"
+          class="w-[380px]!"
+          placeholder="请选择状态"
+          clearable
+        >
+          <el-option
+            v-for="item in stateList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id.toString()"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -154,15 +173,6 @@ onMounted(async () => {
         :columns="columns"
         @refresh="onSearch"
       >
-        <template #buttons>
-          <el-button
-            type="primary"
-            :icon="useRenderIcon(AddFill)"
-            @click="openDialog()"
-          >
-            新增门店
-          </el-button>
-        </template>
         <template v-slot="{ size, dynamicColumns }">
           <pure-table
             ref="tableRef"
@@ -185,76 +195,37 @@ onMounted(async () => {
             @page-size-change="handleSizeChange"
             @page-current-change="handleCurrentChange"
           >
-            <template #errorCount="{ row }">
-              <el-tag
-                size="large"
-                type="danger"
-                @click="
-                  router.push({
-                    name: 'ErrorReport',
-                    query: { shopId: row.id }
-                  })
-                "
-              >
-                {{ row.errorCount }}
-              </el-tag>
-            </template>
-            <template #disputeCount="{ row }">
-              <el-tag
-                size="large"
-                type="success"
-                @click="
-                  router.push({
-                    name: 'DeclarationReport',
-                    query: { shopId: row.id }
-                  })
-                "
-              >
-                {{ row.disputeCount }}
-              </el-tag>
-            </template>
-            <template #violationCount="{ row }">
-              <el-tag
-                size="large"
-                type="warning"
-                @click="
-                  router.push({
-                    name: 'ViolationReport',
-                    query: { shopId: row.id }
-                  })
-                "
-              >
-                {{ row.violationCount }}
-              </el-tag>
-            </template>
             <template #operation="{ row }">
               <el-button
+                v-if="row.state === 101"
                 class="reset-margin"
                 link
                 type="primary"
                 size="default"
-                @click="openDialog('修改', row)"
+                @click="renewApprove(row)"
               >
-                修改
+                通过
               </el-button>
               <el-button
+                v-if="row.state === 101"
                 class="reset-margin"
                 link
                 type="primary"
                 size="default"
-                @click="openDialogOne(row)"
+                @click="renewDisapprove(row)"
               >
-                续费
+                驳回
               </el-button>
-              <!-- <el-button
+              <el-button
+                v-if="row.state === 101"
                 class="reset-margin"
                 link
                 type="primary"
-                :size="size"
-                @click="router.push({ name: 'Employee' })"
+                size="default"
+                @click="cancelRenewal(row)"
               >
-                员工
-              </el-button> -->
+                取消
+              </el-button>
             </template>
           </pure-table>
         </template>

@@ -7,10 +7,7 @@ import { addDialog } from "@/components/ReDialog";
 import type { PaginationProps } from "@pureadmin/table";
 import { deviceDetection } from "@pureadmin/utils";
 import {
-  addShop,
-  getShopDetailApi,
   getMerchantDetail,
-  updateShop,
   getMerchantListApi,
   createMerchantApi,
   updateMerchantApi

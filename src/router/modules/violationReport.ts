@@ -8,7 +8,7 @@ export default {
   meta: {
     icon: "ep/collection",
     title: "违规记录",
-    rank: 6
+    rank: 7
   },
   children: [
     {

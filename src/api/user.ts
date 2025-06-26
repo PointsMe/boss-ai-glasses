@@ -149,7 +149,30 @@ export const addShop = (data?: object) => {
 export const updateShop = (data?: object) => {
   return http.request<any>("post", "/shop/update", { data });
 };
-
+export const enableShopStatus = (data?: object) => {
+  return http.request<any>(
+    "post",
+    "/shop/enable",
+    { data },
+    {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    }
+  );
+};
+export const disableShopStatus = (data?: object) => {
+  return http.request<any>(
+    "post",
+    "/shop/disable",
+    { data },
+    {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    }
+  );
+};
 export const selectorShop = (data?: object) => {
   return http.request<any>("post", "/shop/selector", { data });
 };
@@ -301,4 +324,21 @@ export const createMerchantApi = (data?: object) => {
 };
 export const updateMerchantApi = (data?: object) => {
   return http.request<any>("post", "/merchant/update", { data });
+};
+export const updateShopRenewalApi = (data?: object) => {
+  return http.request<any>("post", "/shop/subscribe/renew/create", { data });
+};
+export const getShopRenewalListApi = (data?: object) => {
+  return http.request<any>("post", "/shop/subscribe/renew/page", { data });
+};
+export const renewApproveApi = (data?: object) => {
+  return http.request<any>("post", "/shop/subscribe/renew/approve", { data });
+};
+export const renewDisapproveApi = (data?: object) => {
+  return http.request<any>("post", "/shop/subscribe/renew/disapprove", {
+    data
+  });
+};
+export const renewCancelApi = (data?: object) => {
+  return http.request<any>("post", "/shop/subscribe/renew/cancel", { data });
 };

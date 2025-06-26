@@ -15,3 +15,9 @@ export const formRules = reactive(<FormRules>{
   zipcode: [{ required: true, message: "此项为必填项", trigger: "blur" }],
   description: [{ required: true, message: "此项为必填项", trigger: "blur" }]
 });
+export const renewalFormRules = reactive(<FormRules>{
+  type: [{ required: true, message: "此项为必填项", trigger: "change" }],
+  amount: [{ required: true, message: "此项为必填项", trigger: "blur" }],
+  endDate: [{ required: true, message: "此项为必填项", trigger: "blur" }],
+  remark: [{ required: true, message: "此项为必填项", trigger: "blur" }]
+});

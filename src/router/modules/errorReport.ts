@@ -8,7 +8,7 @@ export default {
   meta: {
     icon: "ep/collection",
     title: "报错记录",
-    rank: 4
+    rank: 5
   },
   children: [
     {

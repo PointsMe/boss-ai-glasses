@@ -109,7 +109,6 @@ defineExpose({ getRef });
           <el-upload
             class="avatar-uploader"
             :show-file-list="false"
-            :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
             :http-request="handleUpload"
           >

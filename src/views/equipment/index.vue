@@ -3,7 +3,7 @@ import { useRole } from "./utils/hook";
 import { ref, computed, nextTick, onMounted } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { selectorShop } from "@/api/user";
+import { getShopList } from "@/api/user"; // 门店列表
 import {
   delay,
   subBefore,
@@ -70,15 +70,15 @@ const {
   handleSelectionChange
 } = useRole(treeRef);
 const shopList = ref([]);
-const getShopList = async () => {
-  const res = await selectorShop({});
-  if (res) {
-    shopList.value = res.data;
+const getShopListFn = async () => {
+  const res = await getShopList({ page: 1, size: 1000 });
+  if (res && res.code === 20000) {
+    shopList.value = res.data.list;
   }
 };
 
 onMounted(() => {
-  getShopList();
+  getShopListFn();
   useResizeObserver(contentRef, async () => {
     await nextTick();
     delay(60).then(() => {

@@ -5,7 +5,7 @@ import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { delay, subBefore, useResizeObserver } from "@pureadmin/utils";
 import { getPickerShortcuts } from "../utils";
-import { selectorShop } from "@/api/user";
+import { getShopList } from "@/api/user";
 
 import EditPen from "~icons/ep/edit-pen";
 import Refresh from "~icons/ep/refresh";
@@ -56,15 +56,15 @@ const {
   handleSelectionChange
 } = useRole(treeRef);
 const shopList = ref([]);
-const getShopList = async () => {
-  const res = await selectorShop({});
+const getShopListFn = async () => {
+  const res = await getShopList({ page: 1, size: 1000 });
   if (res) {
-    shopList.value = res.data;
+    shopList.value = res.data.list;
   }
 };
 
 onMounted(() => {
-  getShopList();
+  getShopListFn();
   useResizeObserver(contentRef, async () => {
     await nextTick();
     delay(60).then(() => {

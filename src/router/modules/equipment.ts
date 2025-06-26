@@ -8,7 +8,7 @@ export default {
   meta: {
     icon: "ep/setting",
     title: "设备",
-    rank: 7
+    rank: 8
   },
   children: [
     {

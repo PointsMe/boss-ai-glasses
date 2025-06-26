@@ -12,7 +12,6 @@ import {
 import { type Ref, reactive, ref, onMounted, h, toRaw } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-import { el } from "element-plus/es/locales.mjs";
 
 export function useRole(treeRef: Ref) {
   const router = useRouter();
