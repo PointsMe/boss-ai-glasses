@@ -7,9 +7,7 @@ import { delay, subBefore, useResizeObserver } from "@pureadmin/utils";
 import { getPickerShortcuts } from "../utils";
 import { getShopList } from "@/api/user";
 import { useRoute } from "vue-router";
-import EditPen from "~icons/ep/edit-pen";
 import Refresh from "~icons/ep/refresh";
-import View from "~icons/ep/view";
 const route = useRoute();
 defineOptions({
   name: "ErrorReport"

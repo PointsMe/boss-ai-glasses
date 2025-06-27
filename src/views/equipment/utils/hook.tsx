@@ -39,7 +39,7 @@ export function useRole(treeRef: Ref) {
       label: "所属员工",
       prop: "employee",
       cellRenderer: ({ row }) => {
-        return h("div", row.employee.name);
+        return h("div", row.employee?.name);
       }
     },
     // {
