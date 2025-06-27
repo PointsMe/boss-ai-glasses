@@ -100,7 +100,7 @@ onMounted(() => {
           v-model="form.name"
           placeholder="请输入商家名称"
           clearable
-          class="w-[180px]!"
+          class="w-[300px]!"
         />
       </el-form-item>
       <el-form-item>
@@ -217,7 +217,12 @@ onMounted(() => {
                 link
                 type="primary"
                 :size="size"
-                @click="router.push({ name: 'Store' })"
+                @click="
+                  router.push({
+                    name: 'Store',
+                    query: { merchantId: row.id }
+                  })
+                "
               >
                 门店列表
               </el-button>

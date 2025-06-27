@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useRole } from "./utils/hook";
 import { ref, computed, nextTick, onMounted } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
@@ -20,6 +20,7 @@ import Close from "~icons/ep/close";
 import Check from "~icons/ep/check";
 import { getMerchantListApi } from "@/api/user";
 const router = useRouter();
+const route = useRoute();
 defineOptions({
   name: "Store"
 });
@@ -107,7 +108,7 @@ onMounted(async () => {
       <el-form-item label="商家名称" prop="name">
         <el-select
           v-model="form.merchantId"
-          class="w-[180px]!"
+          class="w-[300px]!"
           placeholder="请选择商家"
           filterable
           clearable
@@ -125,7 +126,7 @@ onMounted(async () => {
           v-model="form.name"
           placeholder="请输入门店名称"
           clearable
-          class="w-[180px]!"
+          class="w-[300px]!"
         />
       </el-form-item>
       <el-form-item>

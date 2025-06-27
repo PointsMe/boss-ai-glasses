@@ -20,11 +20,14 @@ import {
 import { type Ref, reactive, ref, onMounted, h, toRaw } from "vue";
 import { ElMessageBox } from "element-plus";
 import renewalDialog from "../renewalDialog.vue";
+import { useRoute } from "vue-router";
 
 export function useRole(treeRef: Ref) {
+  const route = useRoute();
+  const { merchantId } = route.query;
   const form = reactive({
     name: "",
-    merchantId: ""
+    merchantId: merchantId ?? ""
   });
   const currentPage = ref(1);
   const currentSize = ref(10);

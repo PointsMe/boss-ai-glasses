@@ -37,7 +37,17 @@ export function useRole(treeRef: Ref) {
   const columns: TableColumnList = [
     {
       label: "商家名称",
-      prop: "name"
+      prop: "name",
+      cellRenderer: ({ row }) => (
+        <div class="flex items-center justify-center">
+          <img
+            src={row.logoUrl}
+            alt=""
+            class="w-[80px] h-[80px] rounded-full"
+          />
+          <span class="ml-2">{row.name}</span>
+        </div>
+      )
     },
     {
       label: "地址信息",

@@ -3,7 +3,7 @@ import { useRole } from "./utils/hook";
 import { ref, computed, nextTick, onMounted } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { getShopList } from "@/api/user"; // 门店列表
+import { getShopList, getMerchantListApi } from "@/api/user"; // 门店列表
 import {
   delay,
   subBefore,
@@ -70,6 +70,7 @@ const {
   handleSelectionChange
 } = useRole(treeRef);
 const shopList = ref([]);
+const merchantList = ref([]);
 const getShopListFn = async () => {
   const res = await getShopList({ page: 1, size: 1000 });
   if (res && res.code === 20000) {
@@ -77,8 +78,16 @@ const getShopListFn = async () => {
   }
 };
 
+const getMerchantListFn = async () => {
+  const res = await getMerchantListApi({ page: 1, size: 1000 });
+  if (res && res.code === 20000) {
+    merchantList.value = res.data.list;
+  }
+};
+
 onMounted(() => {
   getShopListFn();
+  getMerchantListFn();
   useResizeObserver(contentRef, async () => {
     await nextTick();
     delay(60).then(() => {
@@ -98,19 +107,29 @@ onMounted(() => {
       :model="form"
       class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
     >
-      <el-form-item label="" prop="number">
-        <el-input
-          v-model="form.number"
-          placeholder="请输入眼镜编号"
-          clearable
+      <el-form-item label="商家名称" prop="merchantId">
+        <el-select
+          v-model="form.merchantId"
           class="w-[380px]!"
-        />
+          placeholder="请选择商家"
+          filterable
+          clearable
+        >
+          <el-option
+            v-for="item in merchantList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="" prop="shopId">
+      <el-form-item label="门店名称" prop="shopId">
         <el-select
           v-model="form.shopId"
           class="w-[380px]!"
           placeholder="请选择门店"
+          filterable
+          clearable
         >
           <el-option
             v-for="item in shopList"
@@ -119,6 +138,14 @@ onMounted(() => {
             :value="item.id"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="眼镜编号" prop="number">
+        <el-input
+          v-model="form.number"
+          placeholder="请输入眼镜编号"
+          clearable
+          class="w-[380px]!"
+        />
       </el-form-item>
       <el-form-item>
         <el-button

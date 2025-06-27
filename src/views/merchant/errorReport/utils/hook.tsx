@@ -233,7 +233,7 @@ export function useRole(treeRef: Ref) {
         ];
       }
       addDialog({
-        title: ``,
+        title: `视频详情`,
         props: {
           formInline: {
             id: data?.id ?? "",
