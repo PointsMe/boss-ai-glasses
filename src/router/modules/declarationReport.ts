@@ -6,7 +6,7 @@ export default {
   component: Layout,
   redirect: "/declarationReport/index",
   meta: {
-    icon: "ep/collection",
+    icon: "ep/memo",
     title: "申报记录",
     rank: 6
   },

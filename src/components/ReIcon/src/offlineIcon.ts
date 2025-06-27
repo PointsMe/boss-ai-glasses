@@ -10,11 +10,13 @@ import RiSearchLine from "~icons/ri/search-line?raw";
 import RiInformationLine from "~icons/ri/information-line?raw";
 
 import EpUserFilled from "~icons/ep/user-filled?raw";
-
+import EpWallet from "~icons/ep/wallet?raw";
 import EpCollection from "~icons/ep/collection?raw";
-
 import EpCreditCard from "~icons/ep/credit-card?raw";
 import EpSetting from "~icons/ep/setting?raw";
+import EpDocumentDelete from "~icons/ep/document-delete?raw";
+import EpMemo from "~icons/ep/memo?raw";
+import EpTickets from "~icons/ep/tickets?raw";
 const icons = [
   // Element Plus Icon: https://github.com/element-plus/element-plus-icons
   ["ep/home-filled", EpHomeFilled],
@@ -24,7 +26,11 @@ const icons = [
   ["ep/user-filled", EpUserFilled],
   ["ep/collection", EpCollection],
   ["ep/credit-card", EpCreditCard],
-  ["ep/setting", EpSetting]
+  ["ep/setting", EpSetting],
+  ["ep/wallet", EpWallet],
+  ["ep/document-delete", EpDocumentDelete],
+  ["ep/memo", EpMemo],
+  ["ep/tickets", EpTickets]
 ];
 
 // 本地菜单图标，后端在路由的 icon 中返回对应的图标字符串并且前端在此处使用 addIcon 添加即可渲染菜单图标

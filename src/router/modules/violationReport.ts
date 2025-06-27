@@ -6,7 +6,7 @@ export default {
   component: Layout,
   redirect: "/violationReport/index",
   meta: {
-    icon: "ep/collection",
+    icon: "ep/tickets",
     title: "违规记录",
     rank: 7
   },

@@ -6,7 +6,7 @@ export default {
   component: Layout,
   redirect: "/errorReport/index",
   meta: {
-    icon: "ep/collection",
+    icon: "ep/document-delete",
     title: "报错记录",
     rank: 5
   },

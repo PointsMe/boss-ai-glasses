@@ -6,7 +6,7 @@ export default {
   component: Layout,
   redirect: "/renewalList/index",
   meta: {
-    icon: "ep/setting",
+    icon: "ep/wallet",
     title: "续费列表",
     rank: 4
   },
