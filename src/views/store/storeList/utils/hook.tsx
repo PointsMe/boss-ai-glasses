@@ -247,12 +247,6 @@ export function useRole(treeRef: Ref) {
         FormRef.validate(valid => {
           if (valid) {
             console.log("curData", FormRef, curData);
-            if (curData.amount <= 0) {
-              message("请输入正确的续费金额", {
-                type: "error"
-              });
-              return;
-            }
             updateShopRenewalApi({
               shopId: row?.id ?? "",
               type: curData.type,
