@@ -138,7 +138,7 @@ defineExpose({ getRef });
           </el-select>
         </el-form-item>
       </el-col>
-      <el-col :span="24">
+      <!-- <el-col :span="24">
         <el-form-item label="编号" prop="code">
           <el-input
             v-model="newFormInline.code"
@@ -146,7 +146,7 @@ defineExpose({ getRef });
             placeholder="请输入编号"
           />
         </el-form-item>
-      </el-col>
+      </el-col> -->
       <el-col :span="24">
         <el-form-item label="名称" prop="name">
           <el-input
