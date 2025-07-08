@@ -8,7 +8,8 @@ export default {
   meta: {
     icon: "ep/collection",
     title: "商家",
-    rank: 2
+    rank: 2,
+    showLink: true
   },
   children: [
     {

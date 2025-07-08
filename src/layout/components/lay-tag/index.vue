@@ -573,7 +573,7 @@ onBeforeUnmount(() => {
     >
       <div ref="tabDom" class="tab select-none" :style="getTabStyle">
         <div
-          v-for="(item, index) in multiTags"
+          v-for="(item, index) in multiTags.filter(item => item.meta.showLink)"
           :ref="'dynamic' + index"
           :key="index"
           :class="[
