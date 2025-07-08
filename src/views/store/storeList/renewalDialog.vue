@@ -39,8 +39,20 @@ function getRef() {
 }
 defineExpose({ getRef });
 function handleAmountInput(e) {
-  let value = newFormInline.value.amount.replace(/[^0-9]/g, "");
+  // 只能输入正整数且不能以0开头
+  // 只允许输入数字和一个小数点，且小数点不能在开头
+  let value = newFormInline.value.amount
+    .replace(/[^0-9.]/g, "") // 只保留数字和小数点
+    .replace(/^\./, "") // 不允许以小数点开头
+    .replace(/\.{2,}/g, ".") // 连续小数点只保留一个
+    .replace(/(\.\d*)\./g, "$1"); // 只允许出现一个小数点
   newFormInline.value.amount = value;
+}
+function disabledDate(date) {
+  // 只允许选择明天及以后的日期（不允许选择今天及之前的日期）
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return date.getTime() <= today.getTime();
 }
 </script>
 
@@ -85,11 +97,9 @@ function handleAmountInput(e) {
             v-model="newFormInline.endDate"
             placeholder="请选择到期时间"
             value-format="YYYY-MM-DD"
+            :disabled-date="disabledDate"
             type="date"
             style="width: 100%"
-            :disabled-date="
-              date => date.getTime() < new Date().setHours(0, 0, 0, 0)
-            "
           />
         </el-form-item>
       </el-col>
@@ -98,6 +108,7 @@ function handleAmountInput(e) {
           <el-input
             v-model="newFormInline.remark"
             placeholder="请输入备注"
+            maxlength="500"
             type="textarea"
           />
         </el-form-item>
@@ -109,28 +120,31 @@ function handleAmountInput(e) {
 .upload-col-my {
   display: flex;
   justify-content: left;
+
   :deep(.avatar-uploader) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 178px !important;
     height: 178px !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
     transition: border-color 0.3s;
+
     .avatar {
+      display: block;
       width: 178px;
       height: 178px;
-      display: block;
     }
+
     .avatar-uploader-icon {
+      width: 178px;
+      height: 178px;
       font-size: 28px;
       color: #8c8c8c;
-      width: 178px;
-      height: 178px;
     }
   }
 }

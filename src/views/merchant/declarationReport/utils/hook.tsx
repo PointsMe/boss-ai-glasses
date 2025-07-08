@@ -9,15 +9,16 @@ import {
   getDisputeDetailApi,
   disputeReviewApi
 } from "@/api/user";
-import { type Ref, reactive, ref, onMounted, h, toRaw } from "vue";
+import { type Ref, reactive, ref, onMounted, h } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-
+import { convertISOToTimezoneFormat } from "@/utils/time";
 export function useRole(treeRef: Ref) {
   const router = useRouter();
   const form = reactive({
     shopId: router.currentRoute.value.query.shopId,
-    loginTime: ""
+    endTime: "",
+    startTime: ""
   });
   const curRow = ref();
   const formRef = ref();
@@ -85,12 +86,12 @@ export function useRole(treeRef: Ref) {
       cellRenderer: ({ row, props }) => (
         <el-tag
           type={[
-            { 101: "info", 103: "danger", 104: "success" }[row.supervisorState]
+            { 101: "info", 103: "success", 104: "danger" }[row.supervisorState]
           ]}
           size={props.size}
         >
           {[
-            { 101: "督导未审核", 103: "督导审核不通过", 104: "督导审核通过" }[
+            { 101: "督导未审核", 103: "督导审核通过", 104: "督导审核不通过" }[
               row.supervisorState
             ]
           ]}
@@ -103,15 +104,15 @@ export function useRole(treeRef: Ref) {
       cellRenderer: ({ row, props }) => (
         <el-tag
           type={[
-            { 101: "info", 103: "danger", 104: "success" }[row.reviewerState]
+            { 101: "info", 104: "danger", 103: "success" }[row.reviewerState]
           ]}
           size={props.size}
         >
           {[
             {
               101: "未审核",
-              103: "审核不通过",
-              104: "审核通过",
+              104: "审核不通过",
+              103: "审核通过",
               105: "审核中"
             }[row.reviewerState]
           ]}
@@ -153,7 +154,11 @@ export function useRole(treeRef: Ref) {
   async function onSearch() {
     loading.value = true;
     const { data } = await getDisputeListApi({
-      ...toRaw(form),
+      shopId: form.shopId,
+      startTime: form.startTime
+        ? convertISOToTimezoneFormat(form.startTime)
+        : "",
+      endTime: form.endTime ? convertISOToTimezoneFormat(form.endTime) : "",
       page: currentPage.value,
       size: currentSize.value,
       kind: 101

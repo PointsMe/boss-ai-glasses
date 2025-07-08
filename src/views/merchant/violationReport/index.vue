@@ -5,7 +5,7 @@ import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { delay, subBefore, useResizeObserver } from "@pureadmin/utils";
 import { getPickerShortcuts } from "../utils";
-import { getShopList } from "@/api/user";
+import { getShopList, getKindList } from "@/api/user";
 
 import EditPen from "~icons/ep/edit-pen";
 import Refresh from "~icons/ep/refresh";
@@ -56,15 +56,22 @@ const {
   handleSelectionChange
 } = useRole(treeRef);
 const shopList = ref([]);
+const kindList = ref([]);
 const getShopListFn = async () => {
   const res = await getShopList({ page: 1, size: 1000 });
   if (res) {
     shopList.value = res.data.list;
   }
 };
-
+const getindListFn = async () => {
+  const res = await getKindList();
+  if (res) {
+    kindList.value = res.data;
+  }
+};
 onMounted(() => {
   getShopListFn();
+  getindListFn();
   useResizeObserver(contentRef, async () => {
     await nextTick();
     delay(60).then(() => {
@@ -89,6 +96,8 @@ onMounted(() => {
           v-model="form.shopId"
           class="w-[380px]!"
           placeholder="请选择门店"
+          filterable
+          clearable
         >
           <el-option
             v-for="item in shopList"
@@ -98,17 +107,52 @@ onMounted(() => {
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="时间" prop="code">
+      <el-form-item label="违规类型" prop="kind">
+        <el-select
+          v-model="form.kind"
+          class="w-[380px]!"
+          clearable
+          placeholder="请选择违规类型"
+          filterable
+        >
+          <el-option
+            v-for="item in kindList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="开始时间"
+        prop="startTime"
+        style="margin-right: 10px"
+      >
         <el-date-picker
-          v-model="form.loginTime"
-          :shortcuts="getPickerShortcuts()"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期时间"
-          end-placeholder="结束日期时间"
+          v-model="form.startTime"
+          type="datetime"
+          :disabled-date="
+            date =>
+              form.endTime
+                ? date.getTime() > new Date(form.endTime).getTime()
+                : false
+          "
+          placeholder="Select date and time"
         />
       </el-form-item>
-
+      <el-form-item label="~" prop="endTime">
+        <el-date-picker
+          v-model="form.endTime"
+          type="datetime"
+          :disabled-date="
+            date =>
+              form.startTime
+                ? date.getTime() < new Date(form.startTime).getTime()
+                : false
+          "
+          placeholder="Select date and time"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button
           type="primary"

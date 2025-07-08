@@ -5,14 +5,16 @@ import { addDialog } from "@/components/ReDialog";
 import type { PaginationProps } from "@pureadmin/table";
 import { deviceDetection } from "@pureadmin/utils";
 import { getviolationListApi, getViolationDetailApi } from "@/api/user";
-import { type Ref, reactive, ref, onMounted, h, toRaw } from "vue";
+import { type Ref, reactive, ref, onMounted, h } from "vue";
 import { useRouter } from "vue-router";
-
+import { convertISOToTimezoneFormat } from "@/utils/time";
 export function useRole(treeRef: Ref) {
   const router = useRouter();
   const form = reactive({
     shopId: router.currentRoute.value.query.shopId,
-    loginTime: ""
+    endTime: "",
+    startTime: "",
+    kind: ""
   });
   const curRow = ref();
   const formRef = ref();
@@ -38,13 +40,13 @@ export function useRole(treeRef: Ref) {
         return h("div", row?.shop?.name);
       }
     },
-    {
-      label: "地址信息",
-      prop: "shopId",
-      cellRenderer: ({ row }) => {
-        return h("div", row.shop.address);
-      }
-    },
+    // {
+    //   label: "地址信息",
+    //   prop: "shopId",
+    //   cellRenderer: ({ row }) => {
+    //     return h("div", row.shop.address);
+    //   }
+    // },
     {
       label: "报错时间",
       prop: "createdAt",
@@ -78,10 +80,10 @@ export function useRole(treeRef: Ref) {
         );
       }
     },
-    {
-      label: "状态",
-      prop: "state"
-    },
+    // {
+    //   label: "状态",
+    //   prop: "state"
+    // },
     {
       label: "操作",
       fixed: "right",
@@ -117,7 +119,11 @@ export function useRole(treeRef: Ref) {
   async function onSearch() {
     loading.value = true;
     const { data } = await getviolationListApi({
-      ...toRaw(form),
+      shopId: form.shopId,
+      startTime: form.startTime
+        ? convertISOToTimezoneFormat(form.startTime)
+        : "",
+      endTime: form.endTime ? convertISOToTimezoneFormat(form.endTime) : "",
       page: currentPage.value,
       size: currentSize.value
     });

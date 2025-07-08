@@ -342,3 +342,6 @@ export const renewDisapproveApi = (data?: object) => {
 export const renewCancelApi = (data?: object) => {
   return http.request<any>("post", "/shop/subscribe/renew/cancel", { data });
 };
+export const getKindList = (data?: object) => {
+  return http.request<any>("post", "/violation/kind/selector", { data });
+};

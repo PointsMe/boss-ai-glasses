@@ -146,6 +146,10 @@ export function useRole(treeRef: Ref) {
       )
     },
     {
+      label: "结束时间",
+      prop: "subscribe.endDate"
+    },
+    {
       label: "创建时间",
       prop: "createTime",
       minWidth: 160,
@@ -243,6 +247,12 @@ export function useRole(treeRef: Ref) {
         FormRef.validate(valid => {
           if (valid) {
             console.log("curData", FormRef, curData);
+            if (curData.amount <= 0) {
+              message("请输入正确的续费金额", {
+                type: "error"
+              });
+              return;
+            }
             updateShopRenewalApi({
               shopId: row?.id ?? "",
               type: curData.type,
