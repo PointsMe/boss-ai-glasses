@@ -11,10 +11,13 @@ const loginRules = reactive<FormRules>({
   password: [
     {
       validator: (rule, value, callback) => {
+        //  else if (!REGEXP_PWD.test(value)) {
+        //   callback(new Error(transformI18n($t("login.purePassWordRuleReg"))));
+        // }
         if (value === "") {
           callback(new Error(transformI18n($t("login.purePassWordReg"))));
-        } else if (!REGEXP_PWD.test(value)) {
-          callback(new Error(transformI18n($t("login.purePassWordRuleReg"))));
+        } else if (value.length < 6 || value.length > 18) {
+          callback(new Error("密码长度不能小于6位，不能大于18位"));
         } else {
           callback();
         }

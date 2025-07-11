@@ -14,7 +14,12 @@ export const formRules = reactive(<FormRules>{
   contactPhone: [{ required: true, message: "此项为必填项", trigger: "blur" }],
   zipcode: [{ required: true, message: "此项为必填项", trigger: "blur" }],
   description: [
-    { required: true, max: 1000, message: "此项为必填项", trigger: "blur" }
+    {
+      required: true,
+      max: 1000,
+      message: "最多输入1000个字符",
+      trigger: "blur"
+    }
   ]
 });
 export const renewalFormRules = reactive(<FormRules>{
