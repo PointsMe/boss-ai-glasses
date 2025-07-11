@@ -41,13 +41,6 @@ export function useRole(treeRef: Ref) {
       }
     },
     {
-      label: "地址信息",
-      prop: "shopId",
-      cellRenderer: ({ row }) => {
-        return h("div", row?.shop?.address);
-      }
-    },
-    {
       label: "申报时间",
       prop: "createdAt",
       formatter: ({ createdAt }) =>
@@ -61,23 +54,18 @@ export function useRole(treeRef: Ref) {
       }
     },
     {
-      label: "违规标题",
-      prop: "violation.title"
+      label: "申报标题",
+      prop: "violationTitle"
     },
     {
-      label: "违规动作描述",
-      prop: "violation.content"
+      label: "申报原因",
+      prop: "reason"
     },
     {
-      label: "时间区间",
-      prop: "startAt",
-      formatter: ({ startAt, endAt }) => {
-        return h(
-          "div",
-          `${dayjs(startAt).format("YYYY-MM-DD HH:mm:ss")} - ${dayjs(
-            endAt
-          ).format("YYYY-MM-DD HH:mm:ss")}`
-        );
+      label: "申报时间",
+      prop: "createdAt",
+      formatter: ({ createdAt }) => {
+        return h("div", `${dayjs(createdAt).format("YYYY-MM-DD HH:mm:ss")}`);
       }
     },
     {

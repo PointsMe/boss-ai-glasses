@@ -151,11 +151,11 @@ export function useRole(treeRef: Ref) {
         props: {
           formInline: {
             id: data?.id ?? "",
-            startAt: data?.violation?.startAt
-              ? dayjs(data?.violation?.startAt).format("YYYY-MM-DD HH:mm:ss")
+            startAt: data?.startAt
+              ? dayjs(data?.startAt).format("YYYY-MM-DD HH:mm:ss")
               : "",
-            endAt: data?.violation?.endAt
-              ? dayjs(data?.violation?.endAt).format("YYYY-MM-DD HH:mm:ss")
+            endAt: data?.endAt
+              ? dayjs(data?.endAt).format("YYYY-MM-DD HH:mm:ss")
               : "",
             fileUrl: data?.fileUrl ?? "",
             title: data?.title ?? "",

@@ -40,13 +40,13 @@ export function useRole(treeRef: Ref) {
         return h("div", row?.shop?.name);
       }
     },
-    {
-      label: "地址信息",
-      prop: "shopId",
-      cellRenderer: ({ row }) => {
-        return h("div", row?.shop?.address);
-      }
-    },
+    // {
+    //   label: "地址信息",
+    //   prop: "shopId",
+    //   cellRenderer: ({ row }) => {
+    //     return h("div", row?.shop?.address);
+    //   }
+    // },
     {
       label: "申报时间",
       prop: "createdAt",

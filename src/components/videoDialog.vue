@@ -27,12 +27,14 @@ const newFormInline = ref(props.formInline);
     <el-row>
       <el-col :span="6">
         <div class="left-col">
-          <h3>视频时间：</h3>
-          <p>
+          <h3 v-if="newFormInline.startAt && newFormInline.endAt">
+            视频时间：
+          </h3>
+          <p v-if="newFormInline.startAt && newFormInline.endAt">
             {{ newFormInline.startAt }}
           </p>
-          <p>-</p>
-          <p>
+          <p v-if="newFormInline.startAt && newFormInline.endAt">-</p>
+          <p v-if="newFormInline.startAt && newFormInline.endAt">
             {{ newFormInline.endAt }}
           </p>
           <h3 class="h3-top">{{ newFormInline.shopName }}</h3>
