@@ -345,7 +345,7 @@ export function useRole(treeRef: Ref) {
                   id: data?.id ?? "",
                   name: curData.name,
                   merchantId: curData.merchantId,
-                  enabled: true,
+                  enabled: data?.enabled ?? true,
                   type: 101,
                   logoUrl: curData.logoUrl,
                   company: {

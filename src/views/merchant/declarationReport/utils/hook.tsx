@@ -62,11 +62,11 @@ export function useRole(treeRef: Ref) {
     },
     {
       label: "违规标题",
-      prop: "reason"
+      prop: "violation.title"
     },
     {
       label: "违规动作描述",
-      prop: "remark"
+      prop: "violation.content"
     },
     {
       label: "时间区间",

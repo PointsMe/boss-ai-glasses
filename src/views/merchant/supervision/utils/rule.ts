@@ -13,10 +13,21 @@ export const formRules = reactive(<FormRules>{
   contactPhone: [{ required: true, message: "此项为必填项", trigger: "blur" }],
   zipcode: [{ required: true, message: "此项为必填项", trigger: "blur" }],
   managerAccount: [
-    { required: true, message: "此项为必填项", trigger: "blur" }
+    {
+      required: true,
+      type: "email",
+      message: "请输入正确的管理者邮箱",
+      trigger: "blur"
+    }
   ],
   managerPassword: [
-    { required: true, message: "此项为必填项", trigger: "blur" }
+    {
+      required: true,
+      min: 6,
+      max: 32,
+      message: "密码长度不能小于6位，不能大于32位",
+      trigger: "blur"
+    }
   ],
   vatNumber: [{ required: true, message: "此项为必填项", trigger: "blur" }],
   taxCode: [{ required: true, message: "此项为必填项", trigger: "blur" }]
